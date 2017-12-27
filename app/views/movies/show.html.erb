@@ -1,0 +1,78 @@
+<%title("#{@movie.title} (#{@movie.released_on.year})")%>
+
+<article id="movie" class="movie">
+  <header>
+    <%= image_for(@movie) %>
+    <h1><%= @movie.title %></h1>
+    <h2>Released: <%= @movie.released_on %></h2>
+  </header>
+
+  <p>
+    <%= @movie.description %>
+  </p>
+  
+  <h3 class="no-rule">
+    <%= @movie.rating %> &bull; <%= @movie.duration %> 
+  </h3>
+  
+  <h3>Cast</h3>
+  <p>
+    <%= @movie.cast %>
+  </p>
+  
+  <h3>Director</h3>
+  <p>
+    <%= @movie.director %>
+  </p>
+  
+  <h3>Total Gross</h3>
+  <p>
+    <%= format_total_gross(@movie) %>
+  </p>
+
+  <p><%= link_to "#{pluralize(@movie.reviews.size, 'review')} for #{@movie.title}", movie_reviews_path(@movie) %>
+  </p>
+
+      <%= link_to 'Submit a review!', new_movie_review_path(@movie), class: 'button ok review' %>
+
+<h3>Average Review</h3>
+<p>
+  <%= format_average_stars(@movie) %>
+</p>
+
+<% if current_user %>
+  <% if @current_favorite %>
+    <%= button_to "Unfave", movie_favorite_path(@movie, @current_favorite), method: :delete, class: "button unfave" %>
+  <% else %>
+    <%= button_to "Favorite", movie_favorites_path(@movie), class: "button fave" %>
+  <% end %>
+<% end %>
+
+  <footer>
+    <nav>
+      <% if current_user_admin? %>
+      <%= link_to 'Edit', edit_movie_path(@movie), class: 'button' %>
+      <%= link_to 'Delete', @movie, 
+                  class: 'button',
+                  method: :delete, data: { confirm: 'Are you sure?' } %>
+                  <% end %>
+    </nav>
+  </footer>
+</article>
+
+
+ <% content_for :side do %>
+  <h3>Genres</h3>
+  <ul>
+    <% @genres.each do |g| %>
+    <li> <%= g.name %> </li>
+    <% end %>
+  </ul>
+
+<h3><%= pluralize(@fans.size, "fan") %></h3>
+<ul>
+  <% @fans.each do |user| %>
+    <li><%= link_to user.name, user%> (<%= user.username %>)</li>
+    <% end %>
+  </ul>
+<% end %>

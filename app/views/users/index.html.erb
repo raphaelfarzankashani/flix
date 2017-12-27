@@ -1,0 +1,15 @@
+
+<header id="content_header">
+	<h1> <%=  pluralize(@users.size, 'users') %>
+	</h1></header>
+ 
+<ol id="users">
+  <% @users.each do |user| %>
+    <li>
+      <span class="user"> <%= link_to user.name, user %></span>
+      <p>
+      </p>
+    </li>
+  <% end %>
+</ol>
+

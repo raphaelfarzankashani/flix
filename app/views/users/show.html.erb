@@ -1,0 +1,49 @@
+<%title(@user.name)%>
+
+
+<header id="content_header">
+	<h1> <%= @user.name %> (<%=@user.username %>)
+	</h1></header>
+	<%= mail_to @user.email %>
+<p> </p>
+<p> Member since <%= @user.created_at.strftime("%B %Y")%> </p>
+
+<% if @user.reviews.any? %>
+	<u><%= @user.name %>'s Reviews:</u>
+	<ol id="reviews">
+  	<% @user.reviews.each do |review| %>
+    <li>
+      <%= link_to review.movie.title, review.movie%>:</span>
+	  <span class="review"><%= pluralize(review.stars, 'star') %></span>
+      <span class="date"><%= time_ago_in_words(review.created_at) %> ago</span>
+      <p>
+        &quot;<%= review.comment %>&quot;
+      </p>
+    </li>
+  <% end %>
+</ol>
+<% end %>
+
+<% content_for :side do %>
+<% if @favorite_movies.any? %>
+<h3><%= pluralize(@favorite_movies.size, "favorite movie") %></h3>
+<ul>
+  <% @favorite_movies.each do |movie| %>
+    <li><%= link_to movie.title, movie%> </li>
+    <% end %>
+  </ul>
+<% end %>
+<% end %>
+
+<footer>
+	<nav>
+		<% if current_user == @user %>
+		<%= link_to "Edit Account", edit_user_path(@user), class: "button"%>
+		<% end %>
+		<% if current_user.admin? %>
+	 	<%= link_to 'Delete Account', @user, 
+                  class: 'button',
+                  method: :delete, data: { confirm: 'Are you sure?' } %>
+        <% end %>
+</nav>
+</footer>
